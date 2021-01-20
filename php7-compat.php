@@ -64,14 +64,18 @@ if (!function_exists('mysql_connect'))
 {
 	function mysql_connect($server = '', $user = '', $password = '', $new_link = false, $client_flags = 0)
 	{
-		global $_php7_compat_global_db_link;
+		if (!$new_link)
+		{
+			global $_php7_compat_global_db_link;
+			$link = $_php7_compat_global_db_link;
+		}
 		
 		if (!$server) $server = ini_get('mysqli.default_host');
 		if (!$user) $user = ini_get('mysqli.default_user');
 		if (!$password) $password = ini_get('mysqli.default_pw');
 		
 		$link = mysqli_connect($server, $user, $password);
-		if (!$_php7_compat_global_db_link) $_php7_compat_global_db_link = $link;
+		if (!$_php7_compat_global_db_link && !$new_link) $_php7_compat_global_db_link = $link;
 		return $link;
 	}
 }
